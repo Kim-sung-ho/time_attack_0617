@@ -27,14 +27,17 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    username = models.CharField("사용자 계정", max_length=50, unique=True)
+    username = models.CharField("사용자 계정", max_length=50)
     password = models.CharField("비밀번호", max_length=128)
     email = models.EmailField("이메일 주소", max_length=100,
                               unique=True)  # unique=True 추가
     fullname = models.CharField("이름", max_length=20)
     join_date = models.DateField("가입일", auto_now_add=True)
+    # user_type = models.ForeignKey(
+    #     "UserType", verbose_name="유저타입", on_delete=models.CASCADE, null=True)
+    # join_date = models.DateTimeField("가입일", auto_now_add=True)
     user_type = models.ForeignKey(
-        "UserType", verbose_name="유저타입", on_delete=models.CASCADE, null=True)
+        'UserType', on_delete=models.SET_NULL, null=True)  # user_type + _id
     is_active = models.BooleanField(default=True)
 
     is_admin = models.BooleanField(default=False)
@@ -60,10 +63,10 @@ class User(AbstractBaseUser):
 
 
 class Hobby(models.Model):
-    name = models.CharField("취미 이름", max_length=20)
+    hobby = models.CharField("취미 이름", max_length=20)
 
     def __str__(self):
-        return self.name
+        return self.hobby
 
 # user detail info table
 
@@ -82,16 +85,21 @@ class UserProfile(models.Model):
 
 
 class UserType(models.Model):
-    name = models.CharField("유저 타입 이름", max_length=20)
+    user_type = models.CharField("유저 타입 이름", max_length=20)
+###############????###############
+
+    class Meta:
+        db_table = 'user_types'
+###############????###############
 
     def __str__(self):
-        return self.name
+        return self.user_type
 
 
 class UserLog(models.Model):
     user = models.ForeignKey(User, verbose_name="유저", on_delete=models.CASCADE)
-    login_date = models.DateTimeField("로그인 일짜", auto_now_add=True)
-    apply_date = models.DateTimeField("지원날짜", null=True, blank=True)
+    last_login_date = models.DateField()
+    last_apply_date = models.DateField(null=True)
 
     def __str__(self):
         return f"{self.user.username} 님의 로그인 내역입니다."
