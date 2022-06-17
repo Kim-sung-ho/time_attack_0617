@@ -86,3 +86,12 @@ class UserType(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class UserLog(models.Model):
+    user = models.ForeignKey(User, verbose_name="유저", on_delete=models.CASCADE)
+    login_date = models.DateTimeField("로그인 일짜", auto_now_add=True)
+    apply_date = models.DateTimeField("지원날짜", null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.user.username} 님의 로그인 내역입니다."
