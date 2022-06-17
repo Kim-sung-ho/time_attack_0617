@@ -11,9 +11,9 @@ class ArticleView(APIView):
 
     def get(self, request):
         user = request.user
-
+        
         articles = ArticleModel.objects.filter(user=user)
-        titles = [article.title for article in articles]  # list 축약 문법
+        titles = [article.title for article in articles] # list 축약 문법
 
         titles = []
 
@@ -21,3 +21,4 @@ class ArticleView(APIView):
             titles.append(article.title)
 
         return Response({"article_list": titles})
+    
